@@ -11,7 +11,7 @@ This Telegram bot helps to send messages from customers and users to a private g
 
 Clone the repository with:
 ```
-$ git clone <repo_URL> && cd drugbot
+$ git clone <repo_URL> && cd connect-support-bot
 ```
 
 You should define these environment variables before using the bot:
@@ -39,7 +39,7 @@ $ python3 main.py
 
 You may customize any bot message, especially the greeting message bot answers to /start command.
 
-Templates are stored in `./drugbot/templates`. The templates use [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) syntax. You can add emoji defined in `common/unicode.py` or define your own.
+Templates are stored in `./templates`. The templates use [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) syntax. You can add emoji defined in `./common/unicode.py` or define your own.
 
 ## Technologies and libraries
 
