@@ -1,0 +1,13 @@
+version: "3.6"
+services:
+  drugbot:
+    build: .
+    environment:
+      TOKEN: ${TOKEN}
+      SUPPORT_CHAT_ID: ${SUPPORT_CHAT_ID}
+    stdin_open: true
+    tty: true
+
+networks:
+  default:
+    name: drugbot_net
