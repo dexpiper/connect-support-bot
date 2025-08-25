@@ -80,15 +80,33 @@ def reply_back_to_user(message):
     added to it.
     """
     if (
-            message.reply_to_message is not None
-            and message.reply_to_message.from_user.is_bot
-    ):
-        user_id = parse_user_id(
+            message.reply_to_message is None
+            or not message.reply_to_message.from_user.is_bot
+       ):
+        return
+    user_id = parse_user_id(
             message.reply_to_message.text or message.reply_to_message.caption
         )
+    if message.text:
         bot.send_message(
             user_id,
             message.text,
+        )
+    elif message.document:
+        bot.send_document(
+            SUPPORT_CHAT_ID,
+            message.document.file_id,
+            caption=message.caption,
+            parse_mode='HTML',
+            thumbnail=message.document.thumbnail,
+        )
+    elif message.photo:
+        ps = max(message.photo, key=lambda p: p.file_size or 0)
+        bot.send_photo(
+            SUPPORT_CHAT_ID,
+            ps.file_id,
+            caption=message.caption,
+            parse_mode='HTML'
         )
 
 
