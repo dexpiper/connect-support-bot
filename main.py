@@ -4,14 +4,14 @@ import re
 import telebot
 
 import views
-from settings import TOKEN, SUPPORT_CHAT_ID
+from settings import TOKEN, SUPPORT_CHAT_ID, DEBUG
 
 botlogger = logging.getLogger('botlogger')
 
 # Setting bot
 bot = telebot.TeleBot(TOKEN)
 tblogger = telebot.logger
-telebot.logger.setLevel(logging.INFO)
+telebot.logger.setLevel(logging.DEBUG if DEBUG else logging.INFO)
 
 
 def run_long_polling():
@@ -72,7 +72,8 @@ def redirect_file_to_admins(message):
     send_file_to_support(caption, message.document)
 
 
-@bot.message_handler(chat_types='group')
+@bot.message_handler(chat_types=['group', 'supergroup'],
+                     content_types=['text', 'photo', 'document'])
 def reply_back_to_user(message):
     """
     Bot redirects admin answers to the user. When replying,
@@ -92,22 +93,25 @@ def reply_back_to_user(message):
             user_id,
             message.text,
         )
+        tblogger.debug(f'Answering to user {user_id} with text')
     elif message.document:
         bot.send_document(
-            SUPPORT_CHAT_ID,
+            user_id,
             message.document.file_id,
             caption=message.caption,
             parse_mode='HTML',
             thumbnail=message.document.thumbnail,
         )
+        tblogger.debug(f'Answering to user {user_id} with document')
     elif message.photo:
         ps = max(message.photo, key=lambda p: p.file_size or 0)
         bot.send_photo(
-            SUPPORT_CHAT_ID,
+            user_id,
             ps.file_id,
             caption=message.caption,
             parse_mode='HTML'
         )
+        tblogger.debug(f'Answering to user {user_id} with a photo')
 
 
 #
