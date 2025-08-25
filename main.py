@@ -83,7 +83,9 @@ def reply_back_to_user(message):
             message.reply_to_message is not None
             and message.reply_to_message.from_user.is_bot
     ):
-        user_id = parse_user_id(message.reply_to_message.text)
+        user_id = parse_user_id(
+            message.reply_to_message.text or message.reply_to_message.caption
+        )
         bot.send_message(
             user_id,
             message.text,
