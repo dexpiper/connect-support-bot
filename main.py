@@ -38,7 +38,7 @@ def answer_start(message):
     send_to_support(views.user_connected(message))
 
 
-@bot.message_handler(chat_types='private')
+@bot.message_handler(chat_types='private', content_types=['text'])
 def redirect_message_to_admins(message):
     """
     Bot redirects user request to admin group.
@@ -49,6 +49,27 @@ def redirect_message_to_admins(message):
     """
     send_to_support(
         views.redirect_user_message(message, add_id=True))
+
+
+@bot.message_handler(chat_types='private', content_types=['photo'])
+def redirect_photo_to_admins(message):
+    """
+    Bot redirects user request to admin group with a photo
+    and a caption.
+    """
+    ps = max(message.photo, key=lambda p: p.file_size or 0)
+    caption = views.redirect_user_message(message, add_id=True, if_data=True)
+    send_photo_to_support(caption, ps.file_id)
+
+
+@bot.message_handler(chat_types='private', content_types=['document'])
+def redirect_file_to_admins(message):
+    """
+    Bot redirects user request to admin group with a file
+    and a caption.
+    """
+    caption = views.redirect_user_message(message, add_id=True, if_data=True)
+    send_file_to_support(caption, message.document)
 
 
 @bot.message_handler(chat_types='group')
@@ -85,6 +106,25 @@ def reply(to_message: object, with_message: str):
         to_message,
         with_message,
         parse_mode='HTML'
+    )
+
+
+def send_photo_to_support(caption: str, file_id: str):
+    bot.send_photo(
+        SUPPORT_CHAT_ID,
+        file_id,
+        caption=caption,
+        parse_mode='HTML'
+    )
+
+
+def send_file_to_support(caption: str, document: object):
+    bot.send_document(
+        SUPPORT_CHAT_ID,
+        document.file_id,
+        caption=caption,
+        parse_mode='HTML',
+        thumbnail=document.thumbnail,
     )
 
 

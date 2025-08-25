@@ -1,2 +1,2 @@
-pyTelegramBotAPI==4.7.1
+pyTelegramBotAPI==4.28.0
 Jinja2

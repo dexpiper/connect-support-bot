@@ -31,7 +31,8 @@ def user_connected(message: object):
     return template.render(message=message, emoji=emoji)
 
 
-def redirect_user_message(message: object, add_id: bool = True):
+def redirect_user_message(message: object, add_id: bool = True,
+                          if_data: bool = False):
     """
     Resend user's message to the admins.
 
@@ -42,7 +43,9 @@ def redirect_user_message(message: object, add_id: bool = True):
     user_id_suffix = (
         f'\n{emoji["magniglass"]} <i>id={message.from_user.id}</i>'
     )
-    template = env.get_template('resend_to_admins.jinja2')
+    text_template = env.get_template('resend_to_admins.jinja2')
+    data_template = env.get_template('resend_object_to_admins.jinja2')
+    template = data_template if if_data else text_template
     rendered = template.render(message=message, emoji=emoji)
     if add_id:
         return rendered + user_id_suffix
